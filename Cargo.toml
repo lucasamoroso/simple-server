@@ -1,0 +1,26 @@
+[package]
+authors = ["luamoroso"]
+edition = "2018"
+name = "simple-server"
+version = "0.1.0"
+
+[lib]
+name = "service"
+path = "src/lib.rs"
+
+[[bin]]
+name = "server"
+path = "src/bin/server.rs"
+
+[[bin]]
+name = "client"
+path = "src/bin/client.rs"
+
+[dependencies]
+clap = "2.33.3"
+env_logger = "0.8.3"
+futures = "0.3.13"
+log = "0.4.0"
+serde = {version = "1.0.123"}
+tarpc = {version = "0.24.1", features = ["full"]}
+tokio = {version = "1.2.0", features = ["full"]}
