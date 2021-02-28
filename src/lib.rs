@@ -1,22 +1,33 @@
+use greeter::greeter_server::Greeter;
+use greeter::{HelloRequest, HelloResponse};
 use log::info;
-use tarpc::context;
-// This is the service definition. It looks a lot like a trait definition.
-/// It defines one RPC, hello, which takes one arg, name, and returns a String.
-#[tarpc::service]
-pub trait World {
-    /// Returns a greeting for name.
-    async fn hello(name: String) -> String;
+use tonic::Request;
+use tonic::Response;
+use tonic::Status;
+
+// Import the generated proto-rust file into a module
+pub mod greeter {
+    tonic::include_proto!("greeter");
 }
 
-// This is the type that implements the generated World trait. It is the business logic
-// and is used to start the server.
-#[derive(Clone)]
-pub struct HelloServer;
+// Implement the service skeleton for the "Greeter" service
+// defined in the proto
+#[derive(Debug, Default)]
+pub struct MyGreeter {}
 
-#[tarpc::server]
-impl World for HelloServer {
-    async fn hello(self, _: context::Context, name: String) -> String {
-        info!("Hello, {}!", name);
-        name
+// Implement the service function(s) defined in the proto
+// for the Greeter service (SayHello...)
+#[tonic::async_trait]
+impl Greeter for MyGreeter {
+    async fn say_hello(
+        &self,
+        request: Request<HelloRequest>,
+    ) -> Result<Response<HelloResponse>, Status> {
+        info!("Received request: {:?}", request);
+        let response = greeter::HelloResponse {
+            message: format!("Hello {}!", request.into_inner().name).into(),
+        };
+
+        Ok(Response::new(response))
     }
 }

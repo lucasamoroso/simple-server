@@ -1,13 +1,17 @@
-# Run
+# Simple Rpc server with Tonic
 
-## Server
+## Run Server
 
 ```#bash
 cargo run -- --port=8080
 ```
 
-## Client
+## Request
 
 ```#bash
-cargo run --bin client -- --server_addr="0.0.0.0:8080" --name="lucas"
+grpcurl -plaintext -import-path ./api/protos \
+    -proto ./api/protos/greeter.proto \
+    -d '{"name": "Tonic"}' \
+    127.0.0.1:8080 \
+    greeter.Greeter/SayHello
 ```
